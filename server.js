@@ -4,31 +4,39 @@ import cors from "cors";
 
 const app = express();
 app.use(express.json());
-
 app.use(cors({ origin: "*" }));
-// Rate limit: 20 requests per minute per IP
-const limiter = rateLimit({
-  windowMs: 30 * 1000,
+
+// Rate limit for /lead
+const leadLimiter = rateLimit({
+  windowMs: 5 * 1000,
   max: 15,
   handler: (req, res) => {
-    return res.status(200).json({
+    return res.status(429).json({
       status: "Fail",
-      message: "API calls exceeded the limit of 15 in 30 second(s)"
+      message: "Lead API exceeded 15 requests per 30 seconds"
     });
   }
 });
 
-// Apply rate limiter to /lead POST route
-app.use("/lead", limiter);
-
-app.post("/lead", (req, res) => {
-  return res.status(200).json({
-    status: "Success",
-    message: "Lead created successfully"
-  });
+// Rate limit for /login
+const loginLimiter = rateLimit({
+  windowMs: 20 * 1000, // 20 seconds  
+  max: 20,
+  handler: (req, res) => {
+    return res.status(429).json({
+      status: "Fail",
+      message: "Login attempts exceeded 5 per minute"
+    });
+  }
 });
 
-const PORT = 3000;
-app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
+// Apply only to specific routes
+app.post("/limiter-1/lead", leadLimiter, (req, res) => {
+  res.json({ status: "Success", message: "Lead created successfully" });
 });
+
+app.post("/limiter-2/login", loginLimiter, (req, res) => {
+  res.json({ status: "Success", message: "Lead created successfully" });
+});
+
+app.listen(3000, () => console.log("Server running on port 3000"));
