@@ -32,11 +32,11 @@ const loginLimiter = rateLimit({
 
 // Apply only to specific routes
 app.post("/limiter-1/lead", leadLimiter, (req, res) => {
-  res.json({ status: "Success", message: "Lead created successfully" });
+  res.json({ status: "Success", message: "Lead create" });
 });
 
 app.post("/limiter-2/login", loginLimiter, (req, res) => {
-  res.json({ status: "Success", message: "Lead created successfully" });
+  res.json({ status: "Success", message: "Lead create" });
 });
 
 app.listen(3000, () => console.log("Server running on port 3000"));
