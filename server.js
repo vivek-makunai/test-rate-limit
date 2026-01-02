@@ -13,30 +13,30 @@ const leadLimiter = rateLimit({
   handler: (req, res) => {
     return res.status(429).json({
       status: "Fail",
-      message: "Lead API exceeded 15 requests per 30 seconds"
+      message: "Lead API exceeded 15 requests per 30 seconds",
     });
-  }
+  },
 });
 
 // Rate limit for /login
 const loginLimiter = rateLimit({
-  windowMs: 20 * 1000, // 20 seconds  
+  windowMs: 20 * 1000, // 20 seconds
   max: 20,
   handler: (req, res) => {
     return res.status(429).json({
       status: "Fail",
-      message: "Login attempts exceeded 5 per minute"
+      message: "Login attempts exceeded 5 per minute",
     });
-  }
+  },
 });
 
 // Apply only to specific routes
 app.post("/limiter-1/lead", leadLimiter, (req, res) => {
-  res.json({ status: "Success", message: "Lead created successfully" });
+  res.json({ status: "Success", message: "Limit has been reached" });
 });
 
 app.post("/limiter-2/login", loginLimiter, (req, res) => {
-  res.json({ status: "Success", message: "Lead created successfully" });
+  res.json({ status: "Success", message: "Daily limit exhausted" });
 });
 
 app.listen(3000, () => console.log("Server running on port 3000"));
