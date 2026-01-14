@@ -1,6 +1,7 @@
 import express from "express";
 import rateLimit from "express-rate-limit";
 import cors from "cors";
+import { basicAuth } from "./basicauth-middleware.js";
 
 const app = express();
 app.use(express.json());
@@ -38,5 +39,13 @@ app.post("/limiter-1/lead", leadLimiter, (req, res) => {
 app.post("/limiter-2/login", loginLimiter, (req, res) => {
   res.json({ status: "Success", message: "Lead created successfully" });
 });
+
+app.post("/secure/basic-auth", basicAuth, (req, res) => {
+  res.json({
+    status: "Success",
+    message: "Lead created successfully",
+  });
+});
+
 
 app.listen(3000, () => console.log("Server running on port 3000"));
